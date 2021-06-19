@@ -135,3 +135,20 @@ fn smoke() {
 fn test_rust_grammar() {
     let _ = rust_grammar();
 }
+
+#[test]
+#[should_panic]
+fn leading_pipe_bad() {
+    let grammar = "
+    Name = | 'ident' | 'self'
+    Bad = | 'asdf' 'hjkl' ";
+    let _ = grammar.parse::<Grammar>().unwrap();
+}
+
+#[test]
+fn leading_pipe_ok() {
+    let grammar = "
+    Name = | 'ident' | 'self'
+    Ok = 'asdf' 'hjkl' ";
+    let _ = grammar.parse::<Grammar>().unwrap();
+}

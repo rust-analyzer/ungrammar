@@ -109,6 +109,13 @@ fn node(p: &mut Parser) -> Result<()> {
 }
 
 fn rule(p: &mut Parser) -> Result<Rule> {
+    let leading_pipe_loc = match p.peek() {
+        Some(tk) if tk.kind == TokenKind::Pipe => {
+            Some(p.bump().unwrap().loc)
+        }
+        _ => None
+    };
+
     let lhs = seq_rule(p)?;
     let mut alt = vec![lhs];
     while let Some(token) = p.peek() {
@@ -120,7 +127,11 @@ fn rule(p: &mut Parser) -> Result<Rule> {
         alt.push(rule)
     }
     let res = if alt.len() == 1 {
-        alt.pop().unwrap()
+        if let Some(loc) = leading_pipe_loc {
+            bail!(loc, "Leading pipes are not allowed for rules with only one production!");
+        } else {
+            alt.pop().unwrap()
+        }
     } else {
         Rule::Alt(alt)
     };
