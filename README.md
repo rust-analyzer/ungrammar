@@ -1,3 +1,6 @@
+> [!IMPORTANT]
+> This crate now lives in https://github.com/rust-lang/rust-analyzer/tree/master/lib/ungrammar
+
 # ungrammar
 
 A DSL for specifying concrete syntax trees.
